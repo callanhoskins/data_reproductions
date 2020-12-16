@@ -1,0 +1,59 @@
+---
+title: Meat EDA
+author: Callan Hoskins
+date: "`r Sys.Date()`"
+output: 
+  github_document:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r message=FALSE, warning=FALSE}
+# Libraries
+library(tidyverse)
+library(readxl)
+
+# Parameters
+raw_data <- here::here("data-raw/meat_consumption.xlsx")
+data_path <- here::here("data/meat_consumption.rds")
+```
+
+## Turkey
+```{r}
+meat <- read_rds(data_path)
+meat
+```
+
+```{r}
+meat %>% 
+  filter(meat == "Turkey") %>% 
+  mutate(year = as.integer(year)) %>% 
+  ggplot(aes(year, per_cap_retail_wt)) + 
+  geom_point() + 
+  geom_line()
+```
+
+
+# Primary meat types
+
+```{r}
+meat %>% 
+  filter(!meat %in% c("Red Meat", "Poultry")) %>% 
+  ggplot(aes(year, per_cap_retail_wt, color = meat)) + 
+  geom_line()
+```
+
+
+# Larger meat categories
+
+```{r}
+meat %>% 
+  filter(meat %in% c("Red Meat", "Poultry")) %>% 
+  ggplot(aes(year, per_cap_retail_wt, color = meat)) + 
+  geom_line()
+```
+
+
