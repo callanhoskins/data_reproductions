@@ -1,0 +1,139 @@
+---
+title: British names
+author: Callan Hoskins
+date: "`r Sys.Date()`"
+output: 
+  github_document:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+```{r message=FALSE, warning=FALSE}
+# Libraries
+library(tidyverse)
+
+# Parameters
+names_path <- here::here("data/names.rds")
+
+#===============================================================================
+
+# Code
+names <- read_rds(names_path)
+```
+
+# Introduction
+
+*Game of Thrones* was one of the most successful TV franchises of the twenty-first century. I didn't start watching it until it was already done, but before that I remember it being the topic of every few conversations (I always felt left out!). The show was such a hit that it prompted \@chartrdaily to examine whether it had impacted how Brits were naming their babies. Turns out, it did!
+
+![Name of Thrones](./name_of_thrones.png)
+
+In this project, I set out to recreate their visualization and to see whether Brits were becoming more or less creative with their babies' names. 
+
+# Name of Thrones
+
+In addition to the names examined by \@chartrdaily, I also chose to check out "Sansa," another very unique name from Game of Thrones. Other than that, my plot is a re-creation of the original. 
+
+```{r}
+arya <- "#6F9778"
+khaleesi <- "#804B4C"
+theon <- "#060406"
+sansa <- "#487386"
+names %>% 
+  filter(
+    (name == "Theon" & gender == "boy") |
+      (name == "Sansa" & gender == "girl") |
+      (name == "Arya" & gender == "girl") |
+      (name == "Khaleesi" & gender == "girl") |
+      (name == "Cersei" & gender == "girl")
+  ) %>% 
+  mutate(name = factor(name, levels = c("Arya", "Khaleesi", "Theon", "Sansa"))) %>% 
+  ggplot(aes(year, count, color = name)) + 
+  geom_point() + 
+  geom_line(size = 1) + 
+  geom_segment(aes(x = 2019, xend = 2017, y = 427, yend = 427), color = arya) + 
+  geom_segment(aes(x = 2019, xend = 2018.5, y = 53, yend = 200), color = khaleesi) + 
+  geom_segment(aes(x = 2019, xend = 2017.5, y = 29, yend = 115), color = theon) + 
+  geom_vline(xintercept = 2011) + 
+  annotate(
+    geom = "text", 
+    x = 2012.55, 
+    y = 400, 
+    label = "Game of Thrones\nbegins (2011)"
+  ) + 
+  annotate(
+    geom = "text", 
+    x = 2016, 
+    y = 427, 
+    label = "427 baby girls\nin 2019", 
+    size = 3, 
+    color = arya
+  ) + 
+  annotate(
+    geom = "text", 
+    x = 2018.5,
+    y = 225,
+    label = "53 baby girls\nin 2019", 
+    color = khaleesi, 
+    size = 3,
+  ) + 
+  annotate(
+    geom = "text", 
+    x = 2017, 
+    y = 125, 
+    label = "29 baby boys\nin 2019", 
+    color = theon, 
+    size = 3
+  ) + 
+  scale_x_continuous(breaks = seq(2005, 2019), limits = c(2008, 2019)) +
+  scale_color_manual(values = c(arya, khaleesi, theon, sansa)) + 
+  labs(
+    x = "Year", 
+    y = "Number of babies named", 
+    title = "Name of Thrones", 
+    subtitle = "Babies named, England & Wales", 
+    caption = "Source: ONS", 
+    color = NULL
+  )
+```
+Unsurprisingly, the incidences of people naming their children Arya, Khaleesi, and Theon has gone up. Interestingly, Sansa shows a slight rise but nothing noticeable; I think this is strange because Sansa is a really pretty name. To be honest, I don't know *why* anyone would name their child "Theon" based on the character in the show!
+
+# Creativity
+
+It's no secret that certain names are more popular than others... the number of Jack's, Oliver's, and Dan's one meets on a daily basis is far larger than the number of Aarden's, Cayan's, and Deniro's. 
+
+I think it's cool to see people get creative with the names they give their kids (maybe because mine, "Callan," is pretty unique). So I'm interested to see how the creativity of people's naming has changed throughout time. 
+
+As a proxy for creativity, I use the median proportion of babies with a given name. This normalizes the creativity measure with respect to the total number of babies named each year.  
+
+```{r}
+names %>% 
+  group_by(gender, year) %>% 
+  mutate(perc = count / sum(count)) %>% 
+  summarize(med = median(perc)) %>% 
+  ungroup() %>% 
+  mutate(
+    gender = 
+      gender %>% 
+      str_to_title() %>% 
+      str_c("s") %>% 
+      factor(levels = c("Girls", "Boys"))
+  ) %>% 
+  ggplot(aes(year, med, color = gender)) + 
+  geom_line() + 
+  scale_y_continuous(labels = scales::label_percent(accuracy = 0.0001)) + 
+  labs(
+    x = "Year", 
+    y = "Median proportion", 
+    caption = "Source: ONS", 
+    title = "Creativity in Names", 
+    subtitle = "More diversity in girls' names", 
+    color = NULL
+  )
+```
+
+Interestingly, parents seem to draw from a consistently more diverse array of names when naming girls vs. boys. They get more "creative" with girls' names. 
+
+Additionally, parents peaked in their creativity naming both boys and girls around 2000 and hit a 20-year low in 2012. Sorry all you Olivers out there born in 2012. 

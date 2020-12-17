@@ -2,10 +2,10 @@
 VPATH = data data-raw eda reports scripts
 
 # Processed data files
-DATA = meat_consumption.rds
+DATA = meat_consumption.rds names.md
 
 # EDA studies
-EDA = meat_consumption.md
+EDA = meat_consumption.md names.md
 
 # Reports
 REPORTS = meat_consumption.md
@@ -19,6 +19,8 @@ meat_consumption.rds : meat_consumption.xlsx
 
 # EDA study and report dependencies
 meat_consumption.md : meat_consumption.rds
+
+names.md : names.rds
 
 
 # Pattern rules
