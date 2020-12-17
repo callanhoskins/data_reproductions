@@ -5,6 +5,7 @@ Just a folder to hold reports done as reproductions of others' fantastic data sc
 Reproduced topics include: 
 
 * meat consumption
+* name popularity
 
 Check out the `reports` folder for the full analyses. 
 
