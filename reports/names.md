@@ -29,6 +29,7 @@ out “Sansa,” another very unique name from Game of Thrones. Other than
 that, my plot is a re-creation of the original.
 
 ![](names_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+
 Unsurprisingly, the incidences of people naming their children Arya,
 Khaleesi, and Theon has gone up. Interestingly, Sansa shows a slight
 rise but nothing noticeable; I think this is strange because Sansa is a
@@ -53,7 +54,7 @@ total number of babies named each year.
 ![](names_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
 Interestingly, parents seem to draw from a consistently more diverse
-array of names when naming girls vs. boys. They get more “creative” with
+array of names when naming girls vs. boys. They get more creative with
 girls’ names.
 
 Additionally, parents peaked in their creativity naming both boys and

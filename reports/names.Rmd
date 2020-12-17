@@ -98,6 +98,7 @@ names %>%
     color = NULL
   )
 ```
+
 Unsurprisingly, the incidences of people naming their children Arya, Khaleesi, and Theon has gone up. Interestingly, Sansa shows a slight rise but nothing noticeable; I think this is strange because Sansa is a really pretty name. To be honest, I don't know *why* anyone would name their child "Theon" based on the character in the show!
 
 # Creativity
@@ -134,6 +135,6 @@ names %>%
   )
 ```
 
-Interestingly, parents seem to draw from a consistently more diverse array of names when naming girls vs. boys. They get more "creative" with girls' names. 
+Interestingly, parents seem to draw from a consistently more diverse array of names when naming girls vs. boys. They get more creative with girls' names. 
 
 Additionally, parents peaked in their creativity naming both boys and girls around 2000 and hit a 20-year low in 2012. Sorry all you Olivers out there born in 2012. 
