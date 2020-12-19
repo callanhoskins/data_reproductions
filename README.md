@@ -6,6 +6,7 @@ Reproduced topics include:
 
 * meat consumption
 * name popularity
+* vaccine skepticism
 
 Check out the `reports` folder for the full analyses. 
 

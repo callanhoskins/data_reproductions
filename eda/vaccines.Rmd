@@ -1,0 +1,115 @@
+---
+title: Vaccine acceptability
+author: Callan Hoskins
+date: "`r Sys.Date()`"
+output: 
+  github_document:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r message=FALSE, warning=FALSE}
+# Libraries
+library(tidyverse)
+
+# Parameters
+data_path <- here::here("data-raw/vaccines.csv")
+
+#===============================================================================
+
+# Code
+data <- 
+  data_path %>% 
+  read_csv(
+    col_names = c("country", "august", "october"), 
+    skip = 1
+  ) %>% 
+  arrange(desc(october)) %>% 
+  pivot_longer(
+    cols = c("august", "october"), 
+    names_to = "month", 
+    values_to = "perc_agree"
+  ) %>% 
+  mutate(month = month %>% str_to_title() %>% str_c(" 2020"))
+```
+
+```{r}
+data %>% 
+  mutate(country = country %>% fct_reorder(perc_agree)) %>% 
+  ggplot(aes(country, perc_agree, color = month)) + 
+  geom_line(aes(group = country)) + 
+  geom_point() + 
+  coord_flip() 
+```
+
+```{r}
+hdi_path <- here::here("data-raw/un_hdi_2019.xlsx")
+
+library(readxl)
+
+col_names <- 
+  c(
+    "country_rank" = "...1", 
+    "country" = "...2", 
+    "hdi_val" = "Human Development Index (HDI)", 
+    "life_exp_at_birth" = "Life expectancy at birth", 
+    "exp_yrs_school" = "Expected years of schooling", 
+    "gni_per_cap" = "Gross national income (GNI) per capita", 
+    "gni_per_cap_minus_hdi_rank" = "GNI per capita rank minus HDI rank"
+    )
+
+hdi <- 
+  read_excel(hdi_path, skip = 4) %>% 
+  select(!!! col_names) %>% 
+  mutate(
+    country_rank = country_rank %>% as.integer(), 
+    hdi_val = hdi_val %>% as.double(), 
+    life_exp_at_birth = life_exp_at_birth %>% as.double(), 
+    exp_yrs_school = exp_yrs_school %>% as.double(), 
+    gni_per_cap = gni_per_cap %>% as.double(), 
+    gni_per_cap_minus_hdi_rank = gni_per_cap_minus_hdi_rank %>% as.integer()
+  ) %>% 
+  drop_na(country_rank) %>% 
+  mutate(
+    country = 
+      case_when(
+        country == "Hong Kong, China (SAR)" ~ "China", 
+        country == "Korea (Republic of)" ~ "South Korea", 
+        TRUE ~ country
+      )
+  )
+```
+```{r}
+pop_path <- here::here("data-raw/world_populations.csv")
+
+populations <- 
+  read_csv(pop_path, skip = 4) %>% 
+  select(country = `Country Name`, `1960`:`2019`) %>% 
+  pivot_longer(cols = `1960`:`2019`, names_to = "year", values_to = "pop") %>% 
+  mutate(year = year %>% as.integer())
+populations
+```
+```{r}
+populations <- 
+  read_rds(here::here("data/world_populations.rds"))
+hdi <- 
+  read_rds(here::here("data/un_hdi_2019.rds"))
+hdi
+all <- 
+  data %>% 
+  inner_join(hdi) %>% 
+  inner_join(populations %>% filter(year == 2019))
+```
+```{r}
+library(ggrepel)
+
+all %>% 
+  filter(month == "October 2020") %>% 
+  ggplot(aes(hdi_val, perc_agree)) + 
+  geom_point(aes(size = pop)) + 
+  geom_text_repel(aes(label = country), force = 2, box.padding = 0.7, size = 3)
+```
+
